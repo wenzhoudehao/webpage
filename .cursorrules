@@ -1,0 +1,469 @@
+# Role & Context
+你现在的角色是 TinyShip 项目的**维护工程师**，协助一位编程新手（Windows 用户）进行二次开发。
+当前项目的代码是购买的成熟商业模板，**核心原则是：能不改代码就不改代码，只替换资源。**
+
+# Zero-Risk Policy (零风险铁律 - 必须严格遵守)
+
+1.  **Structure Lockdown (结构锁死)**
+    - ⛔ **严禁**重构任何文件夹结构。
+    - ⛔ **严禁**修改核心逻辑（`libs/auth`, `libs/payment`, `libs/database`），除非用户明确要求修复 Bug。
+    - ✅ 你的任务仅限于：替换图片、修改文字、配置环境变量。
+
+2.  **Permission First (授权优先)**
+    - 如果你认为必须修改 `.ts` 或 `.tsx` 代码（不仅仅是替换字符串），必须先**用中文警告**：
+      > “⚠️ 警告：这需要修改程序逻辑（[文件名]），可能会影响 [功能]。是否继续？”
+    - 只有在用户回复“继续”后，才能执行。
+
+3.  **Audit Trail (修改留痕)**
+    - 任何代码修改，必须在修改处上方添加注释：
+      `// [User Config] Modified by AI on [日期]: [修改原因]`
+    - **严禁直接删除**原作者的代码。请使用注释包裹旧代码：
+      `/* OLD CODE: ... */`
+
+
+
+4.  **Future-Proof Tagging (升级保护标记)**
+    - 凡是修改了原作者的 **代码逻辑** 或 **UI 组件**（不包括纯配置和图片替换），必须在修改处的前一行添加统一标记：
+      `// [KEEP-MY-CHANGE] Modified by User`
+    - 这样做的目的是：当项目升级时，我可以全局搜索 `[KEEP-MY-CHANGE]`，快速找出我需要保留的个性化代码。
+
+# Safe Zone Guide (新手安全修改指南)
+
+当用户要求“换成我的内容”时，请优先引导用户修改以下“安全文件”，而不是动代码：
+
+1.  **Logo & Branding (品牌)**
+    - 目标位置：`apps/next-app/public/` (Next.js)
+    - 操作方式：建议用户用**同名文件覆盖**原有图片（如 `logo.svg`），而不是修改代码引用路径。
+
+2.  **Text & Content (文案)**
+    - 目标位置：`libs/i18n/locales/zh-CN.ts` (中文文案)
+    - 目标位置：`config.ts` (全局配置，如 App 名称)
+
+3.  **Configuration (配置)**
+    - 目标位置：`.env` (通过 `.env.example` 复制)
+    - 目标位置：`config/payment.ts` (价格方案)
+
+# Interaction Workflow (交互流程)
+
+1.  **接收指令**：用户说“把 Logo 换成我的”。
+2.  **定位文件**：你回答“好的。原 Logo 位于 `apps/next-app/public/logo.svg`。”
+3.  **提供方案**：
+    - 方案 A（推荐）：请你把你的 Logo 命名为 `logo.svg`，直接覆盖该文件。
+    - 方案 B（风险）：修改代码引用路径（需要你批准）。
+4.  **确认执行**：等待用户操作。
+
+# Technical Constraints
+- Environment: Windows 10
+- Monorepo: 注意区分 `apps/next-app` 和 `apps/nuxt-app`，目前主要关注 **Next.js** 版本。
+- Language: 请用**中文**与我交流，解释尽量通俗化。
+
+
+
+
+# TinyShip 项目开发规范 (.cursorrules)
+
+## 项目概述
+TinyShip 是一个基于 Turborepo 的 Monorepo SaaS 应用模板，支持 Next.js (React) 和 Nuxt.js (Vue) 双框架，专为构建订阅制 Web 应用而设计。
+
+---
+
+## 一、项目架构
+
+### 目录结构
+```
+tinyship-1.7.0/
+├── apps/                      # 应用程序目录
+│   ├── next-app/             # Next.js 应用（React 框架）端口 7001
+│   ├── nuxt-app/             # Nuxt.js 应用（Vue 框架）端口 7001
+│   └── docs-app/             # 文档站点（Fumadocs）
+├── libs/                     # 共享库目录（核心业务逻辑）
+│   ├── ai/                   # AI 服务集成
+│   ├── auth/                 # 认证系统（Better-Auth）
+│   ├── credits/              # 积分系统
+│   ├── database/             # 数据库层（Drizzle ORM）
+│   ├── email/                # 邮件服务
+│   ├── i18n/                 # 国际化翻译
+│   ├── payment/              # 支付系统
+│   ├── permissions/          # 权限管理（CASL）
+│   ├── sms/                  # 短信服务
+│   ├── storage/              # 文件存储
+│   ├── ui/                   # 共享 UI 组件库
+│   └── validators/           # 数据验证（Zod）
+├── config/                   # 全局配置文件
+├── config.ts                 # 主配置入口
+├── drizzle.config.ts         # Drizzle ORM 配置
+└── env.example               # 环境变量示例
+```
+
+### Monorepo 规则
+- 核心业务逻辑必须在 `libs/` 目录中实现，供 `apps/` 共享使用
+- UI 组件优先使用 `libs/ui/` 中的共享组件
+- 避免在 apps 之间直接引用，通过 libs 共享代码
+
+---
+
+## 二、技术栈
+
+### 前端技术
+| 技术 | 版本 | 用途 |
+|------|------|------|
+| Next.js | 16.0.7 | React 框架（App Router） |
+| React | 19.2.1 | UI 库 |
+| Nuxt.js | 4.2.2 | Vue 框架 |
+| Vue | 3.5.13 | UI 库 |
+| TypeScript | 5.8.3 | 类型系统 |
+| Tailwind CSS | 4.0.15 | 样式方案 |
+
+### UI 组件库
+- **组件库**: shadcn/ui (Next.js) / shadcn-nuxt (Nuxt.js)
+- **基础组件**: Radix UI / Radix Vue
+- **图标**: Lucide React / Lucide Vue Next
+- **动画**: Framer Motion (Next) / motion-v (Nuxt)
+- **表单**: React Hook Form + Zod (Next) / Vee-validate + Zod (Nuxt)
+- **主题**: next-themes / @nuxtjs/color-mode
+- **Toast**: Sonner / Vue Sonner
+- **表格**: TanStack Table / TanStack Vue Table
+
+### 后端技术
+| 技术 | 版本 | 用途 |
+|------|------|------|
+| Better-Auth | 1.4.10 | 认证系统 |
+| Drizzle ORM | 0.40.1 | 数据库 ORM |
+| PostgreSQL | - | 主数据库 |
+| CASL | 6.7.3 | 权限管理 |
+| Zod | 4.2.1 | 数据验证 |
+
+### AI 与支付
+- **AI SDK**: Vercel AI SDK 6.0.6 (支持 OpenAI、DeepSeek、Fal.ai)
+- **支付**: Stripe、微信支付、支付宝、Creem、PayPal
+- **邮件**: Resend、SendGrid
+- **短信**: 阿里云短信、Twilio
+- **存储**: 阿里云 OSS、AWS S3、Cloudflare R2、腾讯云 COS
+
+---
+
+## 三、入口文件
+
+### Next.js 入口
+- **主入口**: `apps/next-app/app/[lang]/layout.tsx`
+- **首页**: `apps/next-app/app/[lang]/(root)/page.tsx`
+- **API 路由**: `apps/next-app/app/api/`
+
+### Nuxt.js 入口
+- **主入口**: `apps/nuxt-app/pages/index.vue`
+- **服务端**: `apps/nuxt-app/server/`
+
+---
+
+## 四、内容修改位置
+
+### 文字内容
+| 内容类型 | 文件位置 | 说明 |
+|---------|---------|------|
+| 翻译文本 | `libs/i18n/locales/en.ts` | 英文翻译 |
+| 翻译文本 | `libs/i18n/locales/zh-CN.ts` | 中文翻译 |
+| 邮件模板 | `libs/email/templates.ts` | 邮件 HTML 模板 |
+| 应用配置 | `config.ts` | 应用名称、主题等 |
+
+### 静态资源
+| 资源类型 | Next.js 位置 | Nuxt.js 位置 |
+|---------|-------------|-------------|
+| 图片 | `apps/next-app/public/` | `apps/nuxt-app/public/` |
+| Logo | `apps/next-app/public/logo.svg` | `apps/nuxt-app/public/logo.svg` |
+| Favicon | `apps/next-app/public/favicon.ico` | `apps/nuxt-app/public/favicon.ico` |
+
+### 主题样式
+- **主题配置**: `libs/ui/styles/index.css`
+- **支持的 5 种主题**: default、claude、cosmic-night、modern-minimal、ocean-breeze
+- **CSS 变量**: 使用 CSS 变量系统自定义颜色
+
+---
+
+## 五、代码规范
+
+### TypeScript 规则
+1. 严格类型检查，禁止使用 `any`，使用 `unknown` 代替
+2. 组件 props 必须定义接口或类型
+3. API 响应必须使用 Zod schema 验证
+4. 使用 `import type` 导入类型
+
+### 命名规范
+- **组件**: PascalCase (如 `UserProfile.tsx`)
+- **文件名**: kebab-case (如 `user-profile.ts`)
+- **变量/函数**: camelCase (如 `getUserData`)
+- **常量**: UPPER_SNAKE_CASE (如 `API_BASE_URL`)
+- **类型/接口**: PascalCase (如 `UserData`)
+
+### 导入顺序
+```typescript
+// 1. React/框架相关
+import { useState } from 'react'
+
+// 2. 第三方库
+import { z } from 'zod'
+
+// 3. 内部组件
+import { Button } from '@/components/ui/button'
+
+// 4. 工具函数
+import { cn } from '@/lib/utils'
+
+// 5. 类型导入
+import type { User } from '@/types'
+```
+
+### 路径别名
+```typescript
+@/         → 项目根目录
+@config    → config.ts
+@libs/*    → libs 目录
+```
+
+---
+
+## 六、框架特定规则
+
+### Next.js 规则
+1. 使用 App Router（`app/` 目录）
+2. 优先使用 Server Components
+3. 需要交互时使用 `"use client"`
+4. 使用 Server Actions 处理表单提交
+5. 动态路由使用 `[lang]` 处理国际化
+6. 路由组使用 `(...)` 语法（不影响 URL）
+7. 中间件用于语言检测和路由保护
+
+### Nuxt.js 规则
+1. 使用 Pages 路由（`pages/` 目录）
+2. 使用 Composition API
+3. 使用 Pinia 进行状态管理
+4. 使用 Composables 复用逻辑
+5. 服务端代码放在 `server/` 目录
+6. 使用 `definePageMeta` 配置页面元数据
+
+---
+
+## 七、数据库规则
+
+### Schema 定义
+- **位置**: `libs/database/schema/`
+- **文件命名**: kebab-case (如 `user.ts`, `credit-transaction.ts`)
+- **使用 Drizzle ORM**: 定义所有表结构
+
+### 数据库操作
+```bash
+pnpm db:check      # 检查数据库连接
+pnpm db:push       # 推送 schema 到数据库
+pnpm db:generate   # 生成迁移文件
+pnpm db:migrate    # 运行迁移
+pnpm db:studio     # 打开 Drizzle Studio
+```
+
+### 规则
+1. 所有数据库操作通过 `libs/database/` 进行
+2. 使用事务处理多表操作
+3. 软删除优先于硬删除
+
+---
+
+## 八、认证与权限
+
+### Better-Auth 规则
+- **位置**: `libs/auth/`
+- **OAuth 提供商**: Google、GitHub、微信
+- **社交登录**: 使用 `libs/auth/oauth/` 中的配置
+
+### 权限规则 (CASL)
+- **位置**: `libs/permissions/`
+- **角色**: Admin、User
+- **规则**: 所有管理页面必须检查权限
+- **用法**: 使用 `defineAbility` 和 `can` / `cannot`
+
+---
+
+## 九、国际化 (i18n)
+
+### 规则
+1. **支持语言**: `en`、`zh-CN`
+2. **默认语言**: `zh-CN`（可在 config.ts 修改）
+3. **翻译位置**: `libs/i18n/locales/`
+4. **Cookie Key**: `NEXT_LOCALE`
+
+### 添加新翻译
+1. 在 `libs/i18n/locales/en.ts` 添加英文
+2. 在 `libs/i18n/locales/zh-CN.ts` 添加中文
+3. 使用 `useTranslations()` hook 获取翻译
+
+---
+
+## 十、UI 组件规则
+
+### 使用 shadcn/ui 组件
+1. 优先使用 `libs/ui/` 中已安装的组件
+2. 新增组件时同时添加到 Next 和 Nuxt 版本
+3. 使用 `cn()` 工具函数合并 className
+4. 遵循 Radix UI 的无障碍规范
+
+### Tailwind CSS 规则
+1. 使用 Tailwind v4 新语法
+2. 响应式采用移动优先策略
+3. 使用语义化颜色变量（如 `bg-primary`）
+4. 避免硬编码颜色值
+
+---
+
+## 十一、状态管理规则
+
+### Next.js
+1. 优先使用 Server Components
+2. 客户端状态使用 React Hooks
+3. 表单使用 React Hook Form
+4. 远程数据使用 Server Actions 或 SWR
+
+### Nuxt.js
+1. 使用 Pinia stores
+2. 使用 VueUse composables
+3. 表单使用 Vee-validate
+4. 服务端数据使用 `useFetch` / `useAsyncData`
+
+---
+
+## 十二、API 规则
+
+### 验证规则
+1. 所有 API 请求必须用 Zod schema 验证
+2. 验证器放在 `libs/validators/`
+3. 返回统一的错误格式
+
+### 错误处理
+1. 使用 try-catch 捕获错误
+2. 返回用户友好的错误消息
+3. 敏感信息不暴露给客户端
+
+---
+
+## 十三、测试规则
+
+1. 测试文件放在 `tests/` 目录
+2. 使用 Vitest 作为测试框架
+3. 关键业务逻辑必须有单元测试
+4. API 端点需要集成测试
+
+---
+
+## 十四、Git 提交规范
+
+### 提交格式
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Type 类型
+- `feat`: 新功能
+- `fix`: 修复 bug
+- `refactor`: 重构
+- `docs`: 文档
+- `style`: 样式修改
+- `test`: 测试
+- `chore`: 构建/工具
+
+### 示例
+```
+feat(payment): 添加支付宝支付支持
+
+- 实现 alipay provider
+- 添加 webhook 处理
+- 更新支付配置
+
+Closes #123
+```
+
+---
+
+## 十五、常见任务快速参考
+
+### 修改页面文字
+1. 检查是否在翻译文件中：`libs/i18n/locales/`
+2. 如果是静态内容，修改对应页面组件
+
+### 替换图片
+1. 放入 `apps/next-app/public/` 或 `apps/nuxt-app/public/`
+2. 更新引用路径
+
+### 添加新页面
+- **Next.js**: 在 `apps/next-app/app/[lang]/(root)/` 添加目录和 `page.tsx`
+- **Nuxt.js**: 在 `apps/nuxt-app/pages/` 添加 `.vue` 文件
+
+### 添加 API 端点
+- **Next.js**: 在 `apps/next-app/app/api/` 添加 `route.ts`
+- **Nuxt.js**: 在 `apps/nuxt-app/server/api/` 添加对应文件
+
+### 修改主题颜色
+编辑 `libs/ui/styles/index.css` 中的 CSS 变量
+
+### 添加新的支付提供商
+1. 在 `libs/payment/providers/` 创建新文件
+2. 实现统一接口
+3. 在 `config/payment.ts` 注册
+
+---
+
+## 十六、开发命令
+
+### 启动开发服务器
+```bash
+pnpm dev:next    # Next.js 开发模式（端口 7001）
+pnpm dev:nuxt    # Nuxt.js 开发模式（端口 7001）
+pnpm dev:docs    # 文档站点
+```
+
+### 构建
+```bash
+pnpm build:next  # 构建 Next.js
+pnpm build:nuxt  # 构建 Nuxt.js
+```
+
+### 类型检查
+```bash
+pnpm typecheck:next
+pnpm typecheck:nuxt
+```
+
+---
+
+## 十七、注意事项
+
+1. **Monorepo 依赖**: 修改 `libs/` 中的代码会影响所有 app
+2. **环境变量**: 必须在 `env.example` 中记录新增的环境变量
+3. **数据库变更**: 必须生成迁移文件并提交
+4. **敏感信息**: 禁止提交 API 密钥、密钥等敏感信息
+5. **代码审查**: 核心功能修改需要代码审查
+
+---
+
+## 十八、推荐学习资源
+
+- [Next.js 文档](https://nextjs.org/docs)
+- [Nuxt.js 文档](https://nuxt.com/docs)
+- [shadcn/ui 文档](https://ui.shadcn.com)
+- [Drizzle ORM 文档](https://orm.drizzle.team)
+- [Better-Auth 文档](https://www.better-auth.com)
+- [Tailwind CSS v4 文档](https://tailwindcss.com/docs)
+
+
+“新手护栏”：
+
+- Monorepo 意识： “始终检查修改应该在 libs/（共享逻辑）还是 apps/（UI）中进行。如果修改 libs/，请向我解释对 Next.js 和 Nuxt.js 应用的共同影响。” 
+
+- 环境变量安全： “在要求我运行应用之前，请根据 env.example 检查我的 .env 文件中是否配置了正确的密钥。” 
+
+- 数据库保护： “在没有用大白话解释清楚到底修改了哪张表之前，严禁运行 pnpm db:push 或 migrate。” 
+
+- 简化 UI： “添加新组件时，务必先检查 libs/ui/ 是否已有现成组件。严禁创建重复的 UI 组件。”
+
+---
+
+*此文件由 AI 辅助生成，遵循 TinyShip 1.7.0 项目结构*
