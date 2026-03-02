@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(cd:*)",
+      "Bash(pnpm db:push:*)",
+      "Bash(pnpm dev:next:*)",
+      "Bash(pnpm db:seed:*)",
+      "Bash(pnpm db:studio:*)"
     ]
   }
 }
