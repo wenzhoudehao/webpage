@@ -12,6 +12,7 @@ docs/
 ├── README.md                    # 本文件 - 文档索引
 │
 ├── setup/                       # 🚀 项目搭建与配置
+│   ├── Initial Deployment & Supabase Connection Guide.md  # Gemini 部署实战记录
 │   └── 01-Supabase数据库连接.md  # Supabase 数据库连接完整指南
 │
 ├── implementation/              # 🔧 技术实现文档
@@ -49,6 +50,7 @@ docs/
 
 | 文档 | 说明 | 状态 |
 |------|------|------|
+| [Initial Deployment & Supabase Connection Guide](./setup/Initial%20Deployment%20%26%20Supabase%20Connection%20Guide.md) | Gemini 协助的 Supabase 部署实战记录 | ✅ 已完成 |
 | [Supabase 数据库连接](./setup/01-Supabase数据库连接.md) | 连接 Supabase PostgreSQL 数据库的完整流程 | ✅ 已完成 |
 
 ### 🔧 技术实现
