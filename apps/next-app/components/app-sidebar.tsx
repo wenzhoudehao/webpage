@@ -1,6 +1,6 @@
 "use client";
 
-import { User, CreditCard, ShoppingCart, LayoutDashboard, Coins } from "lucide-react"
+import { User, CreditCard, ShoppingCart, LayoutDashboard, Coins, Database } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation";
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
@@ -50,6 +50,11 @@ export function AppSidebar() {
       title: t.navigation.admin.credits,
       url: `/admin/credits`,
       icon: Coins,
+    },
+    {
+      title: '数据同步',
+      url: `/admin/sync`,
+      icon: Database,
     }
   ]
 

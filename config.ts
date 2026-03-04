@@ -17,6 +17,7 @@ import { databaseConfig } from './config/database';
 import { storageConfig } from './config/storage';
 import { aiConfig } from './config/ai';
 import { aiImageConfig } from './config/aiImage';
+import { airtableConfig } from './config/airtable';
 
 // Re-export types for backwards compatibility
 export type { RecurringPlan, OneTimePlan, CreditPlan, Plan } from './config/types';
@@ -152,4 +153,5 @@ export const config = {
   storage: storageConfig,
   ai: aiConfig,
   aiImage: aiImageConfig,
+  airtable: airtableConfig,
 } as const;

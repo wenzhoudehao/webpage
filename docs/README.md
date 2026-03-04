@@ -13,7 +13,11 @@ docs/
 │
 ├── setup/                       # 🚀 项目搭建与配置
 │   ├── Initial Deployment & Supabase Connection Guide.md  # Gemini 部署实战记录
-│   └── 01-Supabase数据库连接.md  # Supabase 数据库连接完整指南
+│   ├── 01-Supabase数据库连接.md  # Supabase 数据库连接完整指南
+│   └── 02-Airtable连接配置.md    # Airtable 多 Base 集成配置
+│
+├── 第一阶段建议文档/              # 📋 收款核销功能设计
+│   └── 订单收款核销表结构设计.md
 │
 ├── implementation/              # 🔧 技术实现文档
 │   ├── auth-middleware-design.md
@@ -52,6 +56,7 @@ docs/
 |------|------|------|
 | [Initial Deployment & Supabase Connection Guide](./setup/Initial%20Deployment%20%26%20Supabase%20Connection%20Guide.md) | Gemini 协助的 Supabase 部署实战记录 | ✅ 已完成 |
 | [Supabase 数据库连接](./setup/01-Supabase数据库连接.md) | 连接 Supabase PostgreSQL 数据库的完整流程 | ✅ 已完成 |
+| [Airtable 连接配置](./setup/02-Airtable连接配置.md) | Airtable 多 Base 集成配置（订单/样品/客户） | ✅ 已完成 |
 
 ### 🔧 技术实现
 
@@ -97,6 +102,8 @@ docs/
 
 | 日期 | 文档 | 变更 |
 |------|------|------|
+| 2026-03-02 | setup/02-Airtable连接配置.md | 新增：Airtable 多 Base 集成配置文档 |
+| 2026-03-02 | libs/airtable/ | 新增：Airtable 集成模块（多 Base 支持、View 过滤） |
 | 2026-03-02 | setup/01-Supabase数据库连接.md | 新增：Supabase 数据库连接完整指南 |
 | 2026-03-02 | README.md | 新增：文档目录索引 |
 
