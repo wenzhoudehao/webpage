@@ -2,8 +2,8 @@ import type { Locale } from './types'
 
 export const en: Locale = {
   common: {
-    welcome: "Welcome to TinyShip",
-    siteName: "TinyShip",
+    welcome: "Welcome to Dehao",
+    siteName: "Dehao",
     login: "Login",
     signup: "Sign Up",
     logout: "Logout",
@@ -70,19 +70,19 @@ export const en: Locale = {
   },
   email: {
     verification: {
-      subject: "Verify your TinyShip account",
+      subject: "Verify your Dehao account",
       title: "Verify your email address",
       greeting: "Hello {{name}},",
-      message: "Thank you for registering with TinyShip. To complete your registration, please click the button below to verify your email address.",
+      message: "Thank you for registering with Dehao. To complete your registration, please click the button below to verify your email address.",
       button: "Verify Email Address",
       alternativeText: "Or, copy and paste the following link into your browser:",
       expiry: "This link will expire in {{expiry_hours}} hours.",
       disclaimer: "If you didn't request this verification, please ignore this email.",
-      signature: "Happy Shipping, The TinyShip Team",
-    copyright: "© {{year}} TinyShip. All rights reserved."
+      signature: "Happy Shipping, The Dehao Team",
+    copyright: "© {{year}} Dehao. All rights reserved."
     },
     resetPassword: {
-      subject: "Reset your TinyShip password",
+      subject: "Reset your Dehao password",
       title: "Reset your password",
       greeting: "Hello {{name}},",
       message: "We received a request to reset your password. Please click the button below to create a new password. If you didn't make this request, you can safely ignore this email.",
@@ -90,40 +90,40 @@ export const en: Locale = {
       alternativeText: "Or, copy and paste the following link into your browser:",
       expiry: "This link will expire in {{expiry_hours}} hours.",
       disclaimer: "If you didn't request a password reset, no action is required.",
-      signature: "Happy Shipping, The TinyShip Team",
-      copyright: "© {{year}} TinyShip. All rights reserved."
+      signature: "Happy Shipping, The Dehao Team",
+      copyright: "© {{year}} Dehao. All rights reserved."
     }
   },
   auth: {
     metadata: {
       signin: {
-        title: "TinyShip - Sign In",
-        description: "Sign in to your TinyShip account to access your dashboard, manage subscriptions, and use premium features.",
+        title: "Dehao - Sign In",
+        description: "Sign in to your Dehao account to access your dashboard, manage subscriptions, and use premium features.",
         keywords: "sign in, login, authentication, account access, dashboard"
       },
       signup: {
-        title: "TinyShip - Create Account",
-        description: "Create your TinyShip account and start building amazing SaaS applications with our comprehensive starter kit.",
+        title: "Dehao - Create Account",
+        description: "Create your Dehao account and start building amazing SaaS applications with our comprehensive starter kit.",
         keywords: "sign up, register, create account, new user, get started"
       },
       forgotPassword: {
-        title: "TinyShip - Reset Password",
-        description: "Reset your TinyShip account password securely. Enter your email to receive password reset instructions.",
+        title: "Dehao - Reset Password",
+        description: "Reset your Dehao account password securely. Enter your email to receive password reset instructions.",
         keywords: "forgot password, reset password, password recovery, account recovery"
       },
       resetPassword: {
-        title: "TinyShip - Create New Password",
-        description: "Create a new secure password for your TinyShip account. Choose a strong password to protect your account.",
+        title: "Dehao - Create New Password",
+        description: "Create a new secure password for your Dehao account. Choose a strong password to protect your account.",
         keywords: "new password, password reset, secure password, account security"
       },
       phone: {
-        title: "TinyShip - Phone Login",
-        description: "Sign in to TinyShip using your phone number. Quick and secure authentication with SMS verification.",
+        title: "Dehao - Phone Login",
+        description: "Sign in to Dehao using your phone number. Quick and secure authentication with SMS verification.",
         keywords: "phone login, SMS verification, mobile authentication, phone number"
       },
       wechat: {
-        title: "TinyShip - WeChat Login",
-        description: "Sign in to TinyShip using your WeChat account. Convenient authentication for Chinese users.",
+        title: "Dehao - WeChat Login",
+        description: "Sign in to Dehao using your WeChat account. Convenient authentication for Chinese users.",
         keywords: "WeChat login, 微信登录, social login, Chinese authentication"
       }
     },
@@ -172,7 +172,7 @@ export const en: Locale = {
       }
     },
     signup: {
-      title: "Sign up for TinyShip",
+      title: "Sign up for Dehao",
       createAccount: "Create an account",
       socialSignup: "Sign up with your favorite social account",
       continueWith: "Or continue with",
@@ -378,7 +378,7 @@ export const en: Locale = {
   },
   admin: {
     metadata: {
-      title: "TinyShip - Admin Dashboard",
+      title: "Dehao - Admin Dashboard",
       description: "Comprehensive admin dashboard for managing users, subscriptions, orders, and system analytics in your SaaS application.",
       keywords: "admin, dashboard, management, SaaS, analytics, users, subscriptions, orders"
     },
@@ -755,7 +755,7 @@ export const en: Locale = {
   },
   pricing: {
     metadata: {
-      title: "TinyShip - Pricing Plans",
+      title: "Dehao - Pricing Plans",
       description: "Choose the perfect plan for your needs. Flexible pricing options including monthly, yearly, and lifetime subscriptions with premium features.",
       keywords: "pricing, plans, subscription, monthly, yearly, lifetime, premium, features"
     },
@@ -820,12 +820,12 @@ export const en: Locale = {
   payment: {
     metadata: {
       success: {
-        title: "TinyShip - Payment Successful",
+        title: "Dehao - Payment Successful",
         description: "Your payment has been processed successfully. Thank you for your subscription and welcome to our premium features.",
         keywords: "payment, success, subscription, confirmation, premium"
       },
       cancel: {
-        title: "TinyShip - Payment Cancelled",
+        title: "Dehao - Payment Cancelled",
         description: "Your payment was cancelled. You can retry the payment or contact our support team for assistance.",
         keywords: "payment, cancelled, retry, support, subscription"
       }
@@ -864,7 +864,7 @@ export const en: Locale = {
   },
   subscription: {
     metadata: {
-      title: "TinyShip - My Subscription",
+      title: "Dehao - My Subscription",
       description: "Manage your subscription plan, view billing history, and update payment methods in your subscription dashboard.",
       keywords: "subscription, billing, payment, plan, management, dashboard"
     },
@@ -893,7 +893,7 @@ export const en: Locale = {
   },
   dashboard: {
     metadata: {
-      title: "TinyShip - Dashboard",
+      title: "Dehao - Dashboard",
       description: "Manage your account, subscriptions, and profile settings in your personalized dashboard.",
       keywords: "dashboard, account, profile, subscription, settings, management"
     },
@@ -1148,7 +1148,7 @@ export const en: Locale = {
   },
   home: {
     metadata: {
-      title: "TinyShip - Modern Full-Stack SaaS Development Starter",
+      title: "Dehao - Modern Full-Stack SaaS Development Starter",
       description: "A modern, full-featured monorepo starter kit for building SaaS applications with support for both domestic (China) and international markets. Built with Next.js/Nuxt.js, TypeScript, and comprehensive authentication.",
       keywords: "SaaS, monorepo, starter kit, Next.js, Nuxt.js, TypeScript, authentication, i18n, China market, international"
     },
@@ -1169,7 +1169,7 @@ export const en: Locale = {
     },
     features: {
       title: "Full-Stack SaaS Development Platform",
-      subtitle: "From dual-framework support to AI integration, from globalization to localization, TinyShip provides complete modern technology solutions for your business projects.",
+      subtitle: "From dual-framework support to AI integration, from globalization to localization, Dehao provides complete modern technology solutions for your business projects.",
       items: [
         {
           title: "Dual Framework Support",
@@ -1227,7 +1227,7 @@ export const en: Locale = {
     },
     applicationFeatures: {
       title: "Core Application Features",
-      subtitle: "From dual-system support for domestic and international markets to AI integration, TinyShip provides complete technical solutions for your business projects.",
+      subtitle: "From dual-system support for domestic and international markets to AI integration, Dehao provides complete technical solutions for your business projects.",
       items: [
         {
           title: "Dual System Support",
@@ -1272,7 +1272,7 @@ export const en: Locale = {
       items: [
         {
           title: "Core Platform Development",
-          description: "Complete TinyShip core platform development, including dual framework support, authentication, payment integration, internationalization and other basic functional modules.",
+          description: "Complete Dehao core platform development, including dual framework support, authentication, payment integration, internationalization and other basic functional modules.",
           timeline: "2025 Q3",
           status: "completed",
           statusText: "Completed",
@@ -1304,7 +1304,7 @@ export const en: Locale = {
         },
         {
           title: "Video Tutorial System",
-          description: "Create complete video tutorial series, from basic usage to advanced customization, helping developers quickly master TinyShip's various functions and best practices.",
+          description: "Create complete video tutorial series, from basic usage to advanced customization, helping developers quickly master Dehao's various functions and best practices.",
           timeline: "2026 Q3",
           status: "planned",
           statusText: "Planned",
@@ -1368,15 +1368,15 @@ export const en: Locale = {
     },
     finalCta: {
       title: "Ready to start your voyage?",
-      subtitle: "Join thousands of users and use TinyShip to quickly build your next business project. Though it's a small boat, it's enough to take you to the shore of success. Early bird pricing only for first 100 users!",
+      subtitle: "Join thousands of users and use Dehao to quickly build your next business project. Though it's a small boat, it's enough to take you to the shore of success. Early bird pricing only for first 100 users!",
       buttons: {
         purchase: "Buy Now ¥299",
         demo: "View Demo"
       }
     },
     footer: {
-      copyright: "© {year} TinyShip. All rights reserved.",
-      description: "TinyShip"
+      copyright: "© {year} Dehao. All rights reserved.",
+      description: "Dehao"
     },
     common: {
       demoInterface: "Feature Demo Interface",
@@ -1386,7 +1386,7 @@ export const en: Locale = {
   },
   ai: {
     metadata: {
-      title: "TinyShip - AI Assistant",
+      title: "Dehao - AI Assistant",
       description: "Interact with powerful AI models including GPT-4, Qwen, and DeepSeek. Get AI assistance for coding, writing, and problem-solving.",
       keywords: "AI, assistant, chatbot, GPT-4, artificial intelligence, machine learning, conversation"
     },
@@ -1445,7 +1445,7 @@ export const en: Locale = {
     },
     image: {
       metadata: {
-        title: "TinyShip - AI Image Generation",
+        title: "Dehao - AI Image Generation",
         description: "Generate stunning images using AI. Powered by Qwen-Image, fal.ai Flux, and OpenAI DALL-E.",
         keywords: "AI, image generation, DALL-E, Flux, Qwen, text to image, art, creative"
       },
@@ -1520,7 +1520,7 @@ export const en: Locale = {
   },
   premiumFeatures: {
     metadata: {
-      title: "TinyShip - Premium Features",
+      title: "Dehao - Premium Features",
       description: "Explore all the premium features available with your subscription. Access advanced tools, AI assistance, and enhanced functionality.",
       keywords: "premium, features, advanced, tools, subscription, benefits, enhanced"
     },
@@ -1675,7 +1675,7 @@ export const en: Locale = {
   },
   docs: {
     home: {
-      title: "TinyShip Docs",
+      title: "Dehao Docs",
       subtitle: "Built with Fumadocs",
       description: "A static site project based on Fumadocs, perfect for documentation, blogs, and static pages.",
       cta: {
@@ -1689,7 +1689,7 @@ export const en: Locale = {
     },
     blog: {
       title: "Blog",
-      description: "Latest articles and updates from the TinyShip team",
+      description: "Latest articles and updates from the Dehao team",
       allPosts: "All Posts",
       previousPage: "← Previous",
       nextPage: "Next →",

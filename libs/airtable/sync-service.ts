@@ -69,6 +69,8 @@ export interface SyncStats {
   errors: number;
   /** 耗时（毫秒） */
   duration: number;
+  /** API 调用次数（Airtable 每次最多返回 100 条） */
+  apiCalls: number;
 }
 
 /**
@@ -275,6 +277,7 @@ export class AirtableSyncService {
             deleted: 0,
             errors: 1,
             duration: 0,
+            apiCalls: 0,
           };
         }
 
@@ -367,6 +370,7 @@ export class AirtableSyncService {
       deleted: 0,
       errors: 0,
       duration: 0,
+      apiCalls: 0,
     };
 
     // 使用 Field ID 指定要获取的字段（API 请求用 Field ID，返回数据用字段名）
@@ -382,9 +386,10 @@ export class AirtableSyncService {
     ];
 
     const client = createAirtableClient<POFields>('PO', { base: 'order' });
-    const records = await collectAll(client, { view: options.view, fields: fieldsToFetch });
+    const { records, apiCalls } = await collectAll(client, { view: options.view, fields: fieldsToFetch });
 
     stats.total = records.length;
+    stats.apiCalls = apiCalls;
 
     for (const record of records) {
       try {
@@ -467,6 +472,7 @@ export class AirtableSyncService {
       deleted: 0,
       errors: 0,
       duration: 0,
+      apiCalls: 0,
     };
 
     // 使用 Field ID 指定要获取的字段
@@ -483,9 +489,10 @@ export class AirtableSyncService {
     ];
 
     const client = createAirtableClient<PaymentFields>('收款登记', { base: 'order' });
-    const records = await collectAll(client, { view: options.view, fields: fieldsToFetch });
+    const { records, apiCalls } = await collectAll(client, { view: options.view, fields: fieldsToFetch });
 
     stats.total = records.length;
+    stats.apiCalls = apiCalls;
 
     for (const record of records) {
       try {
@@ -495,13 +502,13 @@ export class AirtableSyncService {
         const data: NewCachedPayment = {
           id: record.id,
           paymentNo: extractString(fields['收款ID']),
-          customerName: extractString(fields['客户']),
+          customerName: extractString(fields['客户名称']),
           receivedAmount: parseNumber(fields['实收金额（自动提取）']),
           unallocatedBalance: parseNumber(fields['待分配余额']),
           paymentMethod: extractString(fields['付款类型']),
           receivedDate: parseDate(fields['收款日期']),
-          bankAccount: extractString(fields['收款账户']) ||
-            (fields['银行收款通知'] ? String(fields['银行收款通知']) : null),
+          bankAccount: extractString(fields['收款账户']),
+          bankNotice: fields['银行收款通知'] ? String(fields['银行收款通知']) : null,
           remarks: fields['备注'] ? String(fields['备注']) : null,
           rawData: fields,
           syncedAt: new Date(),
@@ -521,6 +528,7 @@ export class AirtableSyncService {
               paymentMethod: data.paymentMethod,
               receivedDate: data.receivedDate,
               bankAccount: data.bankAccount,
+              bankNotice: data.bankNotice,
               remarks: data.remarks,
               rawData: data.rawData,
               syncedAt: data.syncedAt,
@@ -552,13 +560,15 @@ export class AirtableSyncService {
       deleted: 0,
       errors: 0,
       duration: 0,
+      apiCalls: 0,
     };
 
     // 注意：Airtable API 返回的字段 key 是字段名，    // 字段名: 关联订单, 关联收款记录, 本次分配金额, 核销类型, 收款日期, 预收款分配备注
     const client = createAirtableClient<VerificationFields>('收款_中间表', { base: 'order' });
-    const records = await collectAll(client, { view: options.view });
+    const { records, apiCalls } = await collectAll(client, { view: options.view });
 
     stats.total = records.length;
+    stats.apiCalls = apiCalls;
 
     for (const record of records) {
       try {

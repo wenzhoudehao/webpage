@@ -34,7 +34,7 @@ export const config = {
      * Application Name
      * This will be used throughout the application for branding
      */
-    name: 'TinyShip',
+    name: 'Dehao',
 
     /**
      * Logo Configuration
@@ -92,7 +92,7 @@ export const config = {
       /**
        * Storage key for theme persistence
        */
-      storageKey: 'tinyship-ui-theme'
+      storageKey: 'dehao-ui-theme'
     },
 
     /**

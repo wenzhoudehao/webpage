@@ -185,6 +185,9 @@ export const cachedPayment = pgTable("cached_payment", {
   /** 收款账户 - Airtable 字段：收款账户 */
   bankAccount: text("bank_account"),
 
+  /** 银行收款通知 - Airtable 字段：银行收款通知（原始数据） */
+  bankNotice: text("bank_notice"),
+
   /** 备注 - Airtable 字段：备注 */
   remarks: text("remarks"),
 

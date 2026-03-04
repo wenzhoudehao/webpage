@@ -87,7 +87,7 @@ export async function GET(): Promise<NextResponse<DiagnosticResponse | { error: 
     const authResult = await verifyAdmin();
     if (!authResult.authorized) {
       return NextResponse.json(
-        { error: authResult.error },
+        { error: authResult.error || 'Unauthorized' },
         { status: authResult.status }
       );
     }
@@ -104,7 +104,7 @@ export async function GET(): Promise<NextResponse<DiagnosticResponse | { error: 
     // 3. 从 Airtable 获取核销记录
     type VerificationFields = Record<string, unknown>;
     const client = createAirtableClient<VerificationFields>('收款_中间表', { base: 'order' });
-    const verificationRecords = await collectAll(client, { view: 'API_Sync_Active' });
+    const { records: verificationRecords } = await collectAll(client, { view: 'API_Sync_Active' });
 
     // 4. 分析记录
     // 现在所有记录都会同步，只是有些关联不完整
@@ -159,7 +159,7 @@ export async function GET(): Promise<NextResponse<DiagnosticResponse | { error: 
         const poIdList = Array.from(missingPOIds);
         const formula = `OR(${poIdList.map(id => `RECORD_ID()='${id}'`).join(',')})`;
 
-        const poRecords = await collectAll(poClient, {
+        const { records: poRecords } = await collectAll(poClient, {
           filterByFormula: formula,
           fields: [PO_FIELDS.PI, PO_FIELDS.PRODUCTION_NO, PO_FIELDS.CUSTOMER]
         });

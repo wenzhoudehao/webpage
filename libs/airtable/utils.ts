@@ -155,6 +155,16 @@ export function buildFilter(
 }
 
 /**
+ * 收集所有分页记录的结果
+ */
+export interface CollectAllResult<T> {
+  /** 所有记录 */
+  records: AirtableListResult<T>['records'];
+  /** 实际 API 调用次数 */
+  apiCalls: number;
+}
+
+/**
  * 收集所有分页记录
  *
  * Airtable API 每次最多返回 100 条记录，此函数自动处理分页
@@ -162,39 +172,40 @@ export function buildFilter(
  * @param client Airtable 客户端
  * @param options 查询选项（不要设置 offset）
  * @param maxRecords 最大记录数（防止无限循环）
- * @returns 所有记录数组
+ * @returns 所有记录数组和 API 调用次数
  *
  * @example
  * ```typescript
- * const allRecords = await collectAll(table, { filterByFormula: "{Status} = 'Active'" });
+ * const { records, apiCalls } = await collectAll(table, { filterByFormula: "{Status} = 'Active'" });
+ * console.log(`获取 ${records.length} 条记录，消耗 ${apiCalls} 次 API 调用`);
  * ```
  */
 export async function collectAll<T>(
   client: AirtableClient<T>,
-  options: Omit<AirtableQueryOptions, 'offset'> = {},
+  options: Omit<AirtableQueryOptions, 'offset' | 'maxRecords'> = {},
   maxRecords = 10000
-): Promise<AirtableListResult<T>['records']> {
+): Promise<CollectAllResult<T>> {
   const allRecords: AirtableListResult<T>['records'] = [];
   let offset: string | undefined;
-  let totalFetched = 0;
+  let apiCalls = 0;
 
   do {
-    // 每次最多请求 100 条
-    const pageSize = Math.min(100, maxRecords - totalFetched);
+    // 注意：不要在每次请求中设置 maxRecords
+    // Airtable 的 maxRecords 是"总共最多返回多少条"，设置后会限制总返回数
+    // 我们通过自己检查 totalFetched 来控制最大记录数
     const result = await client.list({
       ...options,
-      maxRecords: pageSize,
       offset,
     });
 
+    apiCalls++;
     allRecords.push(...result.records);
-    totalFetched += result.records.length;
     offset = result.offset;
 
     // 达到最大记录数或没有更多数据时停止
-  } while (offset && totalFetched < maxRecords);
+  } while (offset && allRecords.length < maxRecords);
 
-  return allRecords;
+  return { records: allRecords, apiCalls };
 }
 
 /**

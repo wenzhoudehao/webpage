@@ -1,6 +1,6 @@
 "use client";
 
-import { User, CreditCard, ShoppingCart, LayoutDashboard, Coins, Database } from "lucide-react"
+import { LayoutDashboard, Users, Receipt, Coins, Crown } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation";
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
@@ -29,33 +29,28 @@ export function AppSidebar() {
     icon: LayoutDashboard,
   }
 
-  // Menu items.
-  const items = [
+  // 原来的系统管理菜单
+  const adminItems = [
     {
       title: t.navigation.admin.users,
       url: `/admin/users`,
-      icon: User,
-    },
-    {
-      title: t.navigation.admin.subscriptions,
-      url: `/admin/subscriptions`,
-      icon: CreditCard,
+      icon: Users,
     },
     {
       title: t.navigation.admin.orders,
       url: `/admin/orders`,
-      icon: ShoppingCart,
+      icon: Receipt,
+    },
+    {
+      title: t.navigation.admin.subscriptions,
+      url: `/admin/subscriptions`,
+      icon: Crown,
     },
     {
       title: t.navigation.admin.credits,
       url: `/admin/credits`,
       icon: Coins,
     },
-    {
-      title: '数据同步',
-      url: `/admin/sync`,
-      icon: Database,
-    }
   ]
 
   return (
@@ -81,13 +76,13 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
-        {/* Main Menu Section */}
+
+        {/* Admin Section - 原来的系统管理 */}
         <SidebarGroup>
           <SidebarGroupLabel>{t.navigation.admin.application}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {adminItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={pathname.startsWith(`/${currentLocale}${item.url}`)}>
                     <Link href={`/${currentLocale}${item.url}`}>

@@ -48,7 +48,7 @@ export type {
 } from './types';
 
 // 导出工具函数
-export { buildFilter, collectAll, filterBy, filterAnd, filterOr } from './utils';
+export { buildFilter, collectAll, filterBy, filterAnd, filterOr, type CollectAllResult } from './utils';
 
 // 导出 Base 类型
 export type AirtableBaseType = 'order' | 'sample' | 'customer';

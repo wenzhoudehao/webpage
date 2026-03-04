@@ -29,8 +29,11 @@ interface SyncStats {
   table: string;
   total: number;
   inserted: number;
+  updated: number;
+  deleted: number;
   errors: number;
   duration: number;
+  apiCalls?: number;
 }
 
 interface SyncResult {

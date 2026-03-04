@@ -40,7 +40,7 @@ export const PO_FIELDS = {
 export const PAYMENT_FIELDS = {
   /** Field ID: 收款ID - 读取时用 fields['收款ID'] */
   PAYMENT_ID: 'fldN5IzpwsmmfKfIy',
-  /** Field ID: 客户名称 - 读取时用 fields['客户'] */
+  /** Field ID: 客户名称 - 读取时用 fields['客户名称'] */
   CUSTOMER: 'fldvsgY2Ff4eeghTX',
   /** Field ID: 实收金额 - 读取时用 fields['实收金额（自动提取）'] */
   RECEIVED_AMOUNT: 'fldio3QZXVmNbzc9E',
