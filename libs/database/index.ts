@@ -1,12 +1,12 @@
 import * as schema from './schema';
 
-// 导出数据库客户端（这里面包含了真正被正确初始化的 db，而不是假补丁）
+// 导出数据库客户端（它会自动连接你在 Vercel 填好的 DATABASE_URL）
 export * from "./client";
 
-// 导出所有表结构模式
+// 导出所有的表结构模式，让 TypeScript 不再报错
 export * from './schema';
 
-// 为了保持项目中其他文件的向后兼容性，集中导出常用的表
+// 集中导出德皓系统常用的数据库表，确保其他功能运行正常
 export const {
   user,
   order,
