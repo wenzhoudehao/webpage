@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm install && pnpm build:next",
+  "devCommand": "pnpm dev:next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "outputDirectory": "apps/next-app/.next",
+  "regions": ["sfo1"],
+  "functions": {
+    "apps/next-app/app/**/*.{ts,tsx}": {
+      "runtime": "nodejs22.x"
+    }
+  }
+}
