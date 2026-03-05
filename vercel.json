@@ -4,11 +4,5 @@
   "devCommand": "pnpm dev:next",
   "installCommand": "pnpm install",
   "framework": "nextjs",
-  "outputDirectory": "apps/next-app/.next",
-  "regions": ["sfo1"],
-  "functions": {
-    "apps/next-app/app/**/*.{ts,tsx}": {
-      "runtime": "nodejs22.x"
-    }
-  }
+  "outputDirectory": "apps/next-app/.next"
 }
