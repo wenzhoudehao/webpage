@@ -34,6 +34,25 @@ export { OSSProvider };
 export { S3Provider, createR2Provider };
 export { COSProvider, type COSProviderConfig } from './providers/cos';
 
+// [KEEP-MY-CHANGE] 修复 Vercel 构建错误：延迟初始化 storage 避免模块加载时检查环境变量
+let _storage: StorageProvider | null = null;
+
+function getStorage(): StorageProvider {
+  if (!_storage) {
+    _storage = createStorageProvider(config.storage.defaultProvider);
+  }
+  return _storage;
+}
+
 // Default storage instance for easy usage
-// Uses the defaultProvider from config, which can be set via STORAGE_PROVIDER env var
-export const storage = createStorageProvider(config.storage.defaultProvider);
+// Uses Proxy for lazy initialization to avoid build-time errors
+export const storage: StorageProvider = new Proxy({} as StorageProvider, {
+  get(target, prop) {
+    const actualStorage = getStorage();
+    const value = actualStorage[prop as keyof StorageProvider];
+    if (typeof value === 'function') {
+      return value.bind(actualStorage);
+    }
+    return value;
+  }
+});

@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { DataTable } from "./data-table"
 import { POOrder } from "./columns"
 import { PODetailDrawer } from "./components/po-detail-drawer"
@@ -57,10 +57,11 @@ function TopStats({
   )
 }
 
-// ========== 主页面组件 ==========
+// ========== 主页面内容组件（使用 useSearchParams）==========
 
-export default function POManagementPage() {
+function POManagementContent() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const locale = params.lang as string
   const [orders, setOrders] = useState<POOrder[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -85,12 +86,11 @@ export default function POManagementPage() {
   const fetchOrders = useCallback(async () => {
     setIsLoading(true)
     try {
-      const searchParams = new URLSearchParams(window.location.search)
-      const params = new URLSearchParams()
-      searchParams.forEach((value, key) => params.set(key, value))
-      if (!params.has("pageSize")) params.set("pageSize", "20")
+      const queryParams = new URLSearchParams()
+      searchParams.forEach((value, key) => queryParams.set(key, value))
+      if (!queryParams.has("pageSize")) queryParams.set("pageSize", "20")
 
-      const response = await fetch(`/api/po?${params.toString()}`)
+      const response = await fetch(`/api/po?${queryParams.toString()}`)
       if (!response.ok) throw new Error("Failed to fetch orders")
 
       const data = await response.json()
@@ -130,7 +130,7 @@ export default function POManagementPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [searchParams])
 
   useEffect(() => {
     fetchOrders()
@@ -169,5 +169,15 @@ export default function POManagementPage() {
         onOpenChange={setIsDetailOpen}
       />
     </div>
+  )
+}
+
+// ========== 页面入口（用 Suspense 包裹）==========
+
+export default function POManagementPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-full">加载中...</div>}>
+      <POManagementContent />
+    </Suspense>
   )
 }

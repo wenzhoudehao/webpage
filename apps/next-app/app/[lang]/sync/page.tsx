@@ -7,7 +7,7 @@
  * 支持 Tab 切换增量同步和全量同步
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -46,9 +46,9 @@ interface SyncLog {
   errors: string[] | null;
 }
 
-// ========== 组件 ==========
+// ========== 主内容组件 ==========
 
-export default function SyncPage() {
+function SyncPageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -599,5 +599,15 @@ export default function SyncPage() {
         </Tabs>
       </div>
     </div>
+  );
+}
+
+// ========== 页面入口（用 Suspense 包裹）==========
+
+export default function SyncPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">加载中...</div>}>
+      <SyncPageContent />
+    </Suspense>
   );
 }
