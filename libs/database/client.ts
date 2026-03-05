@@ -29,26 +29,52 @@ function getDb(): Database {
   return _db;
 }
 
+// 创建一个返回空结果的 RelationalQueryBuilder mock
+function createNoOpQueryBuilder() {
+  return new Proxy({} as any, {
+    get(target, prop) {
+      // findFirst, findMany 等方法返回空结果
+      if (prop === 'findFirst' || prop === 'findFirstOrThrow') {
+        return async () => {
+          console.warn(`Warning: Attempting to query database during build time.`);
+          return undefined;
+        };
+      }
+      if (prop === 'findMany' || prop === 'findManyOrThrow') {
+        return async () => {
+          console.warn(`Warning: Attempting to query database during build time.`);
+          return [];
+        };
+      }
+      // 其他属性继续代理
+      return createNoOpQueryBuilder();
+    }
+  });
+}
+
 // 创建一个空的数据库操作对象，用于构建时
 function createNoOpDb(): Database {
-  const noOpHandler = {
-    get(target: any, prop: string | symbol) {
-      // 返回一个异步函数，返回空数组或 undefined
-      return async (...args: any[]) => {
-        console.warn(`Warning: Attempting to use database method "${String(prop)}" during build time.`);
-        return Array.isArray(args[0]) ? [] : undefined;
-      };
+  // 创建模拟的 query 对象，包含所有表
+  const mockQuery = new Proxy({} as Database['query'], {
+    get(target, prop) {
+      // 对于任何表名（order, user, subscription 等），返回一个 query builder
+      return createNoOpQueryBuilder();
     }
-  };
+  });
 
-  // 创建一个模拟的 query 对象
-  const mockQuery = new Proxy({} as Database['query'], noOpHandler);
   return new Proxy({} as Database, {
     get(target, prop) {
       if (prop === 'query') {
         return mockQuery;
       }
-      return noOpHandler.get(target, prop);
+      // select, insert, update, delete 等方法
+      if (typeof prop === 'string') {
+        return async (...args: any[]) => {
+          console.warn(`Warning: Attempting to use database method "${prop}" during build time.`);
+          return Array.isArray(args[0]) ? [] : undefined;
+        };
+      }
+      return undefined;
     }
   });
 }
