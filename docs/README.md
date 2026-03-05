@@ -103,6 +103,8 @@ docs/
 
 | 日期 | 文档 | 变更 |
 |------|------|------|
+| 2026-03-05 | user-guide/deployment/vercel-build-fix.md | 新增：Vercel 构建预渲染错误修复记录 |
+| 2026-03-05 | config/utils.ts, libs/database/ | 修复：Vercel 部署时环境变量和数据库连接问题 |
 | 2026-03-02 | setup/02-Airtable连接配置.md | 新增：Airtable 多 Base 集成配置文档 |
 | 2026-03-02 | libs/airtable/ | 新增：Airtable 集成模块（多 Base 支持、View 过滤） |
 | 2026-03-02 | setup/01-Supabase数据库连接.md | 新增：Supabase 数据库连接完整指南 |
