@@ -48,8 +48,9 @@ export async function POST(req: Request) {
     setTimeout(async () => {
       try {
         // Query order status
-        const orderResult = await db.select().from(order).where(eq(order.id, orderId)).limit(1);
-        const currentOrder = orderResult[0];
+        const currentOrder = await db.query.order.findFirst({
+          where: eq(order.id, orderId)
+        });
 
         // Only process orders that are still in pending status
         if (currentOrder?.status === orderStatus.PENDING) {

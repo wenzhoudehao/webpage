@@ -22,8 +22,9 @@ export async function GET(req: Request) {
   // We also query subscription status to update immediately if ACTIVE
   if (isSubscription) {
     try {
-      const orderResult = await db.select().from(order).where(eq(order.id, orderId)).limit(1);
-      const orderRecord = orderResult[0];
+      const orderRecord = await db.query.order.findFirst({
+        where: eq(order.id, orderId)
+      });
 
       if (!orderRecord?.providerOrderId) {
         return NextResponse.redirect(`${config.app.payment.cancelUrl}?provider=paypal&order_id=${orderId}`);
@@ -55,8 +56,9 @@ export async function GET(req: Request) {
           periodEnd.setMonth(periodEnd.getMonth() + months);
         }
 
-        const existingSubResult = await db.select().from(subscription).where(eq(subscription.paypalSubscriptionId, orderRecord.providerOrderId)).limit(1);
-        const existingSubscription = existingSubResult[0];
+        const existingSubscription = await db.query.subscription.findFirst({
+          where: eq(subscription.paypalSubscriptionId, orderRecord.providerOrderId)
+        });
 
         if (existingSubscription) {
           await db.update(subscription)
@@ -99,8 +101,9 @@ export async function GET(req: Request) {
   }
 
   try {
-    const orderResult = await db.select().from(order).where(eq(order.id, orderId)).limit(1);
-    const orderRecord = orderResult[0];
+    const orderRecord = await db.query.order.findFirst({
+      where: eq(order.id, orderId)
+    });
 
     if (!orderRecord?.providerOrderId) {
       console.error('PayPal return: No providerOrderId found for order:', orderId);
@@ -182,12 +185,14 @@ export async function GET(req: Request) {
       const months = plan.duration.months ?? 1;
 
       // Check if user already has active subscription for this plan
-      const existingSubResult = await db.select().from(subscription).where(and(
+      const existingSubscription = await db.query.subscription.findFirst({
+        where: and(
           eq(subscription.userId, orderRecord.userId),
           eq(subscription.planId, orderRecord.planId),
           eq(subscription.status, subscriptionStatus.ACTIVE)
-        )).orderBy(desc(subscription.periodEnd)).limit(1);
-      const existingSubscription = existingSubResult[0];
+        ),
+        orderBy: [desc(subscription.periodEnd)]
+      });
 
       if (existingSubscription) {
         // Extend existing subscription

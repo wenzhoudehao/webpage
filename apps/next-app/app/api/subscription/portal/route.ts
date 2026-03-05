@@ -22,9 +22,10 @@ export async function POST(request: Request) {
     const returnUrl = customReturnUrl || `${config.app.baseUrl}/dashboard/subscription`;
 
     // 查找所有用户的订阅，按创建时间倒序（最新的在前）
-    const allSubscriptions = await db.select().from(subscription)
-      .where(eq(subscription.userId, userId))
-      .orderBy(desc(subscription.createdAt));
+    const allSubscriptions = await db.query.subscription.findMany({
+      where: eq(subscription.userId, userId),
+      orderBy: [desc(subscription.createdAt)]
+    });
 
     if (allSubscriptions.length === 0) {
       return NextResponse.json(
