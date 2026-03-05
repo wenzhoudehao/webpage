@@ -444,7 +444,154 @@ pnpm typecheck:nuxt
 
 ---
 
-## 十八、推荐学习资源
+## 十八、组件驱动开发规范 (Component-Driven Development)
+
+### 核心原则
+**不要写死页面，要写可复用的功能模块。**
+
+### 设计理念
+同一个业务组件，在不同场景下可以有不同的呈现形式：
+
+| 场景 | 表现形式 | 共享逻辑 |
+|------|---------|---------|
+| 财务「收款管理」页面 | 表格中的小格子数字 | 收款进度计算 |
+| 业务「订单详情」页面 | 置顶的大进度条 | 收款进度计算 |
+| 报表页面 | 独立的统计卡片 | 收款进度计算 |
+
+### 组件分层架构
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  页面层 (Pages)                                          │
+│  - 负责布局和数据获取                                      │
+│  - 组合功能模块                                           │
+└─────────────────────────────────────────────────────────┘
+                          ↓ 使用
+┌─────────────────────────────────────────────────────────┐
+│  功能模块层 (Feature Modules)                            │
+│  - 订单列表、收款表格、核销面板等                           │
+│  - 包含业务逻辑                                           │
+└─────────────────────────────────────────────────────────┘
+                          ↓ 使用
+┌─────────────────────────────────────────────────────────┐
+│  UI 组件层 (UI Components)                               │
+│  - Button, Badge, Progress, Table 等                     │
+│  - 纯展示组件，不含业务逻辑                                 │
+└─────────────────────────────────────────────────────────┘
+                          ↓ 使用
+┌─────────────────────────────────────────────────────────┐
+│  工具函数层 (Utils)                                       │
+│  - formatAmount, formatDate, getStatus 等                │
+│  - 可复用的纯函数                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 必须遵循的规则
+
+1. **单一职责**: 每个组件只做一件事
+   - ✅ `PaymentProgressBar` - 只负责显示收款进度
+   - ❌ `OrderPaymentSection` - 混合了进度、列表、操作
+
+2. **Props 驱动**: 组件通过 props 接收数据，不直接调用 API
+   ```tsx
+   // ✅ 好的做法
+   <PaymentProgress total={1000} paid={800} />
+
+   // ❌ 坏的做法
+   <PaymentProgress orderId="xxx" /> // 组件内部调用 API
+   ```
+
+3. **可配置的展示**: 同一组件支持不同的展示模式
+   ```tsx
+   // 紧凑模式（表格中）
+   <PaymentProgress total={1000} paid={800} variant="compact" />
+
+   // 完整模式（详情页）
+   <PaymentProgress total={1000} paid={800} variant="full" />
+   ```
+
+4. **逻辑与 UI 分离**: 业务逻辑提取为 Hook 或工具函数
+   ```tsx
+   // 工具函数
+   export function calcPaymentProgress(total: number, paid: number) {
+     return total > 0 ? Math.round((paid / total) * 100) : 0
+   }
+
+   // 组件只负责展示
+   export function PaymentProgress({ total, paid, variant }: Props) {
+     const progress = calcPaymentProgress(total, paid)
+     // ... 渲染逻辑
+   }
+   ```
+
+### 组件存放位置
+
+| 类型 | 位置 | 说明 |
+|------|------|------|
+| 通用 UI 组件 | `libs/ui/components/` | 跨项目共享 |
+| 业务功能模块 | `apps/next-app/components/features/` | 页面级复用 |
+| 页面专属组件 | `apps/next-app/app/[lang]/xxx/components/` | 单页面使用 |
+| 工具函数 | `libs/utils/` 或页面目录下 | 纯函数 |
+
+### 示例：收款进度组件
+
+```tsx
+// components/features/payment-progress.tsx
+
+interface PaymentProgressProps {
+  total: number        // 订单总额
+  paid: number         // 已收款
+  variant?: 'compact' | 'full'  // 展示模式
+  showLabel?: boolean  // 是否显示标签
+}
+
+export function PaymentProgress({
+  total,
+  paid,
+  variant = 'full',
+  showLabel = true
+}: PaymentProgressProps) {
+  const progress = calcPaymentProgress(total, paid)
+  const outstanding = total - paid
+
+  // 紧凑模式：用于表格中
+  if (variant === 'compact') {
+    return (
+      <div className="flex items-center gap-2">
+        <Progress value={progress} className="h-2 w-16" />
+        <span className="text-xs">{progress}%</span>
+      </div>
+    )
+  }
+
+  // 完整模式：用于详情页
+  return (
+    <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+      <div className="flex justify-between text-sm font-medium">
+        <span>收款进度</span>
+        <span className="text-primary">{progress}%</span>
+      </div>
+      <Progress value={progress} className="h-3" />
+      {showLabel && (
+        <div className="flex justify-between text-sm">
+          <span>已收款：<span className="font-medium">¥{paid.toLocaleString()}</span></span>
+          <span>待收款：<span className="text-orange-600 font-medium">¥{outstanding.toLocaleString()}</span></span>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### 好处
+1. **维护轻松**: 即使有 10 个不同页面，背后的逻辑代码只有一份
+2. **一致性**: 所有地方使用相同的计算逻辑
+3. **可测试**: 工具函数和组件可以独立测试
+4. **扩展性**: 新增展示模式只需修改一个组件
+
+---
+
+## 十九、推荐学习资源
 
 - [Next.js 文档](https://nextjs.org/docs)
 - [Nuxt.js 文档](https://nuxt.com/docs)

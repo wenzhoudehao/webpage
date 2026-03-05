@@ -1,6 +1,6 @@
 # TinyShip 项目文档
 
-> 最后更新：2026-03-02
+> 最后更新：2026-03-05
 > 项目版本：TinyShip 1.7.0
 
 ---
@@ -43,7 +43,8 @@ docs/
     └── deployment/
         ├── overview.md
         ├── cloud.md
-        └── docker.md
+        ├── docker.md
+        └── vercel-build-fix.md     # Vercel 构建预渲染错误修复记录
 ```
 
 ---
@@ -74,7 +75,7 @@ docs/
 | 最佳实践 | [最佳实践](./user-guide/best-practices.md) |
 | 认证系统 | [认证概述](./user-guide/auth/overview.md) |
 | AI 功能 | [AI 聊天](./user-guide/ai/chat.md) · [AI 图像](./user-guide/ai/image.md) |
-| 部署 | [部署概述](./user-guide/deployment/overview.md) · [Docker](./user-guide/deployment/docker.md) |
+| 部署 | [部署概述](./user-guide/deployment/overview.md) · [Docker](./user-guide/deployment/docker.md) · [Vercel 构建修复](./user-guide/deployment/vercel-build-fix.md) |
 
 ---
 

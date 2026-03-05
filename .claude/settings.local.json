@@ -6,7 +6,20 @@
       "Bash(pnpm db:push:*)",
       "Bash(pnpm dev:next:*)",
       "Bash(pnpm db:seed:*)",
-      "Bash(pnpm db:studio:*)"
+      "Bash(pnpm db:studio:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm build:next:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(npx tsx:*)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(pnpm:*)",
+      "Bash(rm:*)",
+      "Bash(dir:*)",
+      "Bash(cp:*)"
     ]
   }
 }

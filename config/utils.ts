@@ -38,10 +38,20 @@ export function requireEnvForService(key: string, service: string, devDefault?: 
       console.warn(`Warning: Using default value for ${key} in development. Set ${key} in .env file for production.`);
       return devDefault;
     }
-    // During build time, return a placeholder to avoid build failures
-    if (process.env.BUILD_TIME === 'true') {
+    // During build time or when NEXT_PHASE is build, return a placeholder to avoid build failures
+    // Vercel sets NEXT_PHASE=phase-production-build during build
+    const isBuildTime = process.env.BUILD_TIME === 'true' ||
+                        process.env.NEXT_PHASE === 'phase-production-build' ||
+                        process.env.VERCEL === '1' && !process.env.VERCEL_URL;
+
+    if (isBuildTime) {
       console.warn(`Warning: Missing ${key} for ${service} service during build. This will be validated at runtime.`);
-      return `__BUILD_TIME_PLACEHOLDER_${key}__`;
+      return devDefault || `__BUILD_TIME_PLACEHOLDER_${key}__`;
+    }
+    // If devDefault is provided, use it as fallback even in production
+    if (devDefault) {
+      console.warn(`Warning: Using fallback value for ${key} in ${service}. Set ${key} in environment variables.`);
+      return devDefault;
     }
     throw new Error(`Missing required environment variable: ${key} for ${service} service. This service is required for the application to function.`);
   }
