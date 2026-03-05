@@ -460,9 +460,8 @@ export class PayPalProvider implements PaymentProvider {
       const { orderId, userId, planId } = metadata;
 
       // Check if order was already processed (by return handler)
-      const existingOrder = await db.query.order.findFirst({
-        where: eq(order.id, orderId)
-      });
+      const existingOrderResult = await db.select().from(order).where(eq(order.id, orderId)).limit(1);
+      const existingOrder = existingOrderResult[0];
 
       if (existingOrder?.status === orderStatus.PAID) {
         console.log(`PayPal webhook: Order ${orderId} already paid, skipping duplicate processing`);
@@ -530,14 +529,12 @@ export class PayPalProvider implements PaymentProvider {
       const months = plan.duration.months ?? 1;
 
       // Check if user already has active subscription for this plan
-      const existingSubscription = await db.query.subscription.findFirst({
-        where: and(
+      const existingSubResult = await db.select().from(userSubscription).where(and(
           eq(userSubscription.userId, userId),
           eq(userSubscription.planId, planId),
           eq(userSubscription.status, subscriptionStatus.ACTIVE)
-        ),
-        orderBy: [desc(userSubscription.periodEnd)]
-      });
+        )).orderBy(desc(userSubscription.periodEnd)).limit(1);
+      const existingSubscription = existingSubResult[0];
 
       if (existingSubscription) {
         // Extend existing subscription
@@ -687,9 +684,8 @@ export class PayPalProvider implements PaymentProvider {
         return { success: false };
       }
 
-      const existingSubscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)
-      });
+      const existingSubResult = await db.select().from(userSubscription).where(eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)).limit(1);
+      const existingSubscription = existingSubResult[0];
 
       if (existingSubscription) {
         await db.update(userSubscription)
@@ -738,9 +734,8 @@ export class PayPalProvider implements PaymentProvider {
     try {
       const paypalSubscriptionId = event.resource.id;
       
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for PayPal subscription ${paypalSubscriptionId}`);
@@ -781,9 +776,8 @@ export class PayPalProvider implements PaymentProvider {
     try {
       const paypalSubscriptionId = event.resource.id;
       
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for PayPal subscription ${paypalSubscriptionId}`);
@@ -813,9 +807,8 @@ export class PayPalProvider implements PaymentProvider {
     try {
       const paypalSubscriptionId = event.resource.id;
       
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for PayPal subscription ${paypalSubscriptionId}`);
@@ -850,9 +843,8 @@ export class PayPalProvider implements PaymentProvider {
         return { success: true };
       }
 
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.paypalSubscriptionId, paypalSubscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for PayPal subscription ${paypalSubscriptionId}`);
@@ -964,9 +956,8 @@ export class PayPalProvider implements PaymentProvider {
    */
   async queryOrder(orderId: string): Promise<OrderQueryResult> {
     try {
-      const orderRecord = await db.query.order.findFirst({
-        where: eq(order.id, orderId)
-      });
+      const orderResult = await db.select().from(order).where(eq(order.id, orderId)).limit(1);
+      const orderRecord = orderResult[0];
 
       if (!orderRecord) {
         return { status: 'failed' };

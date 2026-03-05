@@ -401,9 +401,8 @@ export class CreemProvider implements PaymentProvider {
       }
       
       // 根据Creem订阅ID查找本地订阅记录
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.creemSubscriptionId, subscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.creemSubscriptionId, subscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for Creem subscription ${subscriptionId} - this might be a first payment, will be handled by checkout.completed`);
@@ -459,9 +458,8 @@ export class CreemProvider implements PaymentProvider {
       }
       
       // 根据Creem订阅ID查找本地订阅记录
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.creemSubscriptionId, subscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.creemSubscriptionId, subscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for Creem subscription ${subscriptionId}`);
@@ -494,9 +492,8 @@ export class CreemProvider implements PaymentProvider {
       }
       
       // 根据Creem订阅ID查找本地订阅记录
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.creemSubscriptionId, subscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.creemSubscriptionId, subscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for Creem subscription ${subscriptionId}`);
@@ -528,9 +525,8 @@ export class CreemProvider implements PaymentProvider {
       }
       
       // 根据Creem订阅ID查找本地订阅记录
-      const subscription = await db.query.subscription.findFirst({
-        where: eq(userSubscription.creemSubscriptionId, subscriptionId)
-      });
+      const subResult = await db.select().from(userSubscription).where(eq(userSubscription.creemSubscriptionId, subscriptionId)).limit(1);
+      const subscription = subResult[0];
 
       if (!subscription) {
         console.warn(`No local subscription found for Creem subscription ${subscriptionId}`);
@@ -571,9 +567,8 @@ export class CreemProvider implements PaymentProvider {
 
   private async getOrCreateCustomer(userId: string): Promise<{ customerId: string; email: string }> {
     // 从用户表获取用户信息 - 使用与 Stripe 一致的查询方式
-    const userRecord = await db.query.user.findFirst({
-      where: eq(user.id, userId)
-    });
+    const userResult = await db.select().from(user).where(eq(user.id, userId)).limit(1);
+    const userRecord = userResult[0];
 
     if (!userRecord) {
       throw new Error(`User not found: ${userId}`);

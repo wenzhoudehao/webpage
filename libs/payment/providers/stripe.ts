@@ -244,9 +244,8 @@ export class StripeProvider implements PaymentProvider {
     const stripeCustomerId = stripeSubscription.customer as string;
     
     // 通过 Stripe 客户 ID 查找订阅记录，而不是通过 subscription ID
-    const existingSubscription = await db.query.subscription.findFirst({
-      where: eq(userSubscription.stripeCustomerId, stripeCustomerId)
-    });
+    const existingSubResult = await db.select().from(userSubscription).where(eq(userSubscription.stripeCustomerId, stripeCustomerId)).limit(1);
+    const existingSubscription = existingSubResult[0];
     console.log(existingSubscription, 'existingSubscription')
     if (!existingSubscription) {
       console.error(`找不到对应的订阅记录，Stripe 客户 ID: ${stripeCustomerId}`);
@@ -324,9 +323,8 @@ export class StripeProvider implements PaymentProvider {
 
   private async getOrCreateCustomer(userId: string): Promise<Stripe.Customer> {
     // 1. 先从数据库中查找用户
-    const userRecord = await db.query.user.findFirst({
-      where: eq(user.id, userId)
-    });
+    const userResult = await db.select().from(user).where(eq(user.id, userId)).limit(1);
+    const userRecord = userResult[0];
 
     if (!userRecord) {
       throw new Error('User not found');

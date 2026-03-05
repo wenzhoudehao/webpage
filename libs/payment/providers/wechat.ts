@@ -545,9 +545,8 @@ export class WechatPayProvider implements PaymentProvider {
           .where(eq(order.id, orderId));
           
         // 获取订单信息
-        const orderRecord = await db.query.order.findFirst({
-          where: eq(order.id, orderId)
-        });
+        const orderResult = await db.select().from(order).where(eq(order.id, orderId)).limit(1);
+        const orderRecord = orderResult[0];
         
         if (orderRecord) {
           const plan = config.payment.plans[orderRecord.planId as keyof typeof config.payment.plans] as PaymentPlan;
@@ -577,14 +576,12 @@ export class WechatPayProvider implements PaymentProvider {
           const months = plan.duration.months ?? 1;
           
           // Check if user already has active subscription
-          const existingSubscription = await db.query.subscription.findFirst({
-            where: and(
+          const existingSubResult = await db.select().from(subscription).where(and(
               eq(subscription.userId, orderRecord.userId),
               eq(subscription.planId, orderRecord.planId),
               eq(subscription.status, subscriptionStatus.ACTIVE)
-            ),
-            orderBy: [desc(subscription.periodEnd)]
-          });
+            )).orderBy(desc(subscription.periodEnd)).limit(1);
+          const existingSubscription = existingSubResult[0];
           
           // Calculate new period end time
           const newPeriodEnd = new Date(now);
